@@ -11,11 +11,24 @@ const page = () => {
       <section className="flex-row items-center justify-center">
         <div className="text-center"> 
           <h1 className="mb-6">Hey, I'm just Ken</h1>
-          <p className="text-2xl max-w-lg mx-auto font-inter">
-            Welcome to my personal website!
+          <p className="text-lg max-w-lg mx-auto font-inter">
+            Connect with me on LinkedIn or check out my GitHub for my latest projects and contributions.
           </p>
+          <div className= "flex-row justify-center items-center space-x-4">
+            <button className="bg-white hover:bg-green-500 text-black font-bold py-2 px-4 rounded-full mt-6">
+              <a href="/resume.pdf" download>
+                LinkedIn
+              </a>
+            </button>
+            <button className="bg-white hover:bg-purple-500 text-black font-bold py-2 px-4 rounded-full mt-6">
+              <a href="/resume.pdf" download>
+                GitHub
+              </a>
+            </button>
+            
+          </div>
         </div>
-        <div className="px-">
+        <div className="hide-on-mobile">
           <Image
             src="/images/ken-duong.png"
             alt="Ken Duong"
@@ -39,7 +52,7 @@ const page = () => {
 
         <div className="relative h-[600px] w-full overflow-hidden">
           <CircularGallery
-            bend={-0.5}
+            bend={-0.8}
             textColor="#ffffff"
             borderRadius={0.05}
             scrollEase={0.09}
@@ -47,7 +60,7 @@ const page = () => {
             // Accepts a stylesheet URL (e.g. Google Fonts) or a direct font file.
             fontUrl=""
             font="bold 30px Orbitron"
-            scrollSpeed={1.8}
+            scrollSpeed={0.5}
             itemScale={1}
           />
         </div>
