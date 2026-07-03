@@ -45,7 +45,7 @@ const page = () => {
           <h1 className="mb-8">About Me</h1>
           <p className="text-lg max-w-4xl">
             Hello! My name is Ken Duong, a junior majoring in Computer System Engineering at Arizona State University.
-            I was born in <a href="https://vietnam.travel/places-to-go/southern-vietnam/ho-chi-minh-city" target="_blank" rel="noopener noreferrer"><span className="text-blue-500 font-bold hover:underline">Ho Chi Minh City</span></a>, Vietnam, the origin country of the famous dish “pho.” 
+            I was born in <a href="https://awinterescape.com/ho-chi-minh-city-vietnam/" target="_blank" rel="noopener noreferrer"><span className="text-blue-500 font-bold hover:underline">Ho Chi Minh City</span></a>, Vietnam, the origin country of the famous dish “pho.” 
             I am excited about exploring many new things, especially visiting foreign countries and immersing myself in their cultures. 
             Going into a new environment helped me learn to adapt quickly and be ready and courageous when facing challenges.
             I am interested in everything related to music, such as concerts, genres like Hip-hop, R&B, and, most recently, alternative rock and pop punk. My favorite artists currently include Dog Park, Malcolm Todd, and Daniel Caesar. 
