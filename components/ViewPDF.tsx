@@ -5,9 +5,17 @@ import "./pdfWorker"; // import worker setup
     
 export default function ViewPDF({ filePath }: { filePath: string } ) {
   return (
-    <Document file={filePath}>
-      <Page pageNumber={1} />
-    </Document>
+    <div className = "w-full mx-auto">
+        <Document file={filePath}>
+            <Page 
+            pageNumber={1} 
+            renderAnnotationLayer={false}
+            renderTextLayer={false}
+            />
+
+        </Document>
+    </div>
+    
   );
 }
 
