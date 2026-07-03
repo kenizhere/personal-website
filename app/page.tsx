@@ -68,16 +68,16 @@ const page = () => {
         </div>
       </section>
 
-      <section className="items-center justify-center bg-dark">
-        <div className="flex flex-col items-center text-white py-12">
-          <h1 className="text-4xl font-bold mb-8">Resume</h1>
-          <p className="text-lg mb-8 text-center max-w-2xl">
+      <section className="items-center justify-center py-2 px-4 bg-dark">
+        <div className="text-center text-white py-8 px-4">
+          <h1 className="font-bold mb-8">Resume</h1>
+          <p className="text-lg mb-8 text-center">
             Here is my resume, detailing my experience and skills.
           </p>
           <ResumeDownloadBtn />
-          <div className="mt-8">
-            <ViewPDFWrapper filePath="/files/Duc Duy Lam (Ken) Duong_Resume.pdf"/>
-          </div>
+        </div>
+        <div className="viewPDF mt-8">
+          <ViewPDFWrapper filePath="/files/Duc Duy Lam (Ken) Duong_Resume.pdf"/>
         </div>
       </section>
       
