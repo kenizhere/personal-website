@@ -28,10 +28,10 @@ function autoBind(instance: any): void {
   });
 }
 
-const DEFAULT_FONT = 'bold 30px Figtree';
+const DEFAULT_FONT = 'bold 30px font-inter';
 // Figtree is not guaranteed to be available on the host page, so the component
 // loads it on demand whenever the default font is used.
-const DEFAULT_FONT_URL = 'https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap';
+const DEFAULT_FONT_URL = 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet';
 
 function deriveFontFamilyFromUrl(url: string): string {
   const fileName = (url.split('/').pop() || 'custom-font').split('?')[0];
@@ -131,7 +131,7 @@ function getFontSize(font: string): number {
 function createTextTexture(
   gl: GL,
   text: string,
-  font: string = 'bold 30px monospace',
+  font: string = 'bold 30px font-inter',
   color: string = 'black'
 ): { texture: Texture; width: number; height: number } {
   const canvas = document.createElement('canvas');
@@ -177,7 +177,7 @@ class Title {
   font: string;
   mesh!: Mesh;
 
-  constructor({ gl, plane, renderer, text, textColor = '#545050', font = '30px sans-serif' }: TitleProps) {
+  constructor({ gl, plane, renderer, text, textColor = '#545050', font = '30px font-inter' }: TitleProps) {
     autoBind(this);
     this.gl = gl;
     this.plane = plane;
@@ -321,6 +321,8 @@ class Media {
     this.onResize();
   }
 
+
+  
   createShader() {
     const texture = new Texture(this.gl, {
       generateMipmaps: true
@@ -340,7 +342,7 @@ class Media {
         void main() {
           vUv = uv;
           vec3 p = position;
-          p.z = (sin(p.x * 4.0 + uTime) * 1.5 + cos(p.y * 2.0 + uTime) * 1.5) * (0.1 + uSpeed * 0.5);
+          p.z = (sin(p.x * 4.0 + uTime) * 0.5 + cos(p.y * 2.0 + uTime) * 0.5) * (0.07 + uSpeed * 0.01);
           gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
         }
       `,
@@ -386,13 +388,26 @@ class Media {
       },
       transparent: true
     });
+    
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      texture.image = img;
+      this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+    };
+    img.onerror = (err) => {
+      console.error(`CircularGallery: failed to load image "${this.image}"`, err);
+    };
+    img.src = this.image;
+
+/*
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.src = this.image;
     img.onload = () => {
       texture.image = img;
       this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
-    };
+    };*/
   }
 
   createMesh() {
@@ -526,7 +541,7 @@ class App {
       bend = 1,
       textColor = '#ffffff',
       borderRadius = 0,
-      font = 'bold 30px Figtree',
+      font = 'bold 30px font-inter',
       scrollSpeed = 2,
       scrollEase = 0.05,
       itemScale = 1
@@ -585,52 +600,52 @@ class App {
   ) {
     const defaultItems = [
       {
-        image: `https://picsum.photos/seed/1/800/600?grayscale`,
-        text: 'Bridge'
+        image: 'https://res.cloudinary.com/dyloapct7/image/upload/v1783096175/vung-tau_fz02zv.jpg',
+        text: 'Vung Tau, Vietnam'
       },
       {
-        image: `https://picsum.photos/seed/2/800/600?grayscale`,
-        text: 'Desk Setup'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096174/singapore_syhwcw.jpg`,
+        text: 'Singapore'
       },
       {
-        image: `https://picsum.photos/seed/3/800/600?grayscale`,
-        text: 'Waterfall'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096173/selfie-in-colorado_jplo0i.jpg`,
+        text: 'Colorado'
       },
       {
-        image: `https://picsum.photos/seed/4/800/600?grayscale`,
-        text: 'Strawberries'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096174/sushi_lgqlfy.jpg`,
+        text: 'Favorite food'
       },
       {
-        image: `https://picsum.photos/seed/5/800/600?grayscale`,
-        text: 'Deep Diving'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096173/maroon5_ieny5i.jpg`,
+        text: 'Maroon 5'
       },
       {
-        image: `https://picsum.photos/seed/16/800/600?grayscale`,
-        text: 'Train Track'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096172/jungle-in-vietnam_s6p9hy.jpg`,
+        text: 'Da Lat, Vietnam'
       },
       {
-        image: `https://picsum.photos/seed/17/800/600?grayscale`,
-        text: 'Santorini'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096172/boulder-canyon_ssb55t.jpg`,
+        text: 'Boulder Canyon, Arizona'
       },
       {
-        image: `https://picsum.photos/seed/8/800/600?grayscale`,
-        text: 'Blurry Lights'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096171/hiking_unnqtt.jpg`,
+        text: 'Hiking'
       },
       {
-        image: `https://picsum.photos/seed/9/800/600?grayscale`,
-        text: 'New York'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096171/pho_k1w7om.jpg`,
+        text: 'Favorite Vietnamese food'
       },
       {
-        image: `https://picsum.photos/seed/10/800/600?grayscale`,
-        text: 'Good Boy'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096171/hanoi_b9pvzr.jpg`,
+        text: 'Ha Noi, Vietnam'
       },
       {
-        image: `https://picsum.photos/seed/21/800/600?grayscale`,
-        text: 'Coastline'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096171/happy-in-colorado_ua9grf.jpg`,
+        text: 'Mountains in Colorado'
       },
       {
-        image: `https://picsum.photos/seed/12/800/600?grayscale`,
-        text: 'Palm Trees'
+        image: `https://res.cloudinary.com/dyloapct7/image/upload/v1783096172/chromakopia_enzcv6.jpg`,
+        text: 'Chromakopia Concert'
       }
     ];
     const galleryItems = items && items.length ? items : defaultItems;

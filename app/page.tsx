@@ -40,7 +40,7 @@ const page = () => {
         </div>
       </section>
 
-      <section className="justify-center items-center px-4 py-2 bg-dark">
+      <section className="justify-center items-center px-4 py-2 bg-dark mt-20">
         <div className="text-white mx-auto max-w-4xl px-4 text-center">
           <h1 className="mb-8">About Me</h1>
           <p className="text-lg max-w-4xl">
@@ -60,15 +60,15 @@ const page = () => {
             scrollEase={0.09}
             // Optionally load a custom font for the labels.
             // Accepts a stylesheet URL (e.g. Google Fonts) or a direct font file.
-            fontUrl=""
-            font="bold 30px Orbitron"
+            fontUrl="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+            font="bold 30px Montserrat"
             scrollSpeed={0.5}
             itemScale={1}
           />
         </div>
       </section>
 
-      <section className="items-center justify-center py-2 px-4 bg-dark">
+      <section className="items-center justify-center py-2 px-4 bg-dark mt-20">
         <div className="text-center text-white py-8 px-4">
           <h1 className="font-bold mb-8">Resume</h1>
           <p className="text-lg mb-8 text-center">
@@ -76,11 +76,10 @@ const page = () => {
           </p>
           <ResumeDownloadBtn />
         </div>
-        <div className="viewPDF mt-8">
+        <div className="mt-8">
           <ViewPDFWrapper filePath="/files/Duc Duy Lam (Ken) Duong_Resume.pdf"/>
         </div>
       </section>
-      
     </main>
   )
 }
