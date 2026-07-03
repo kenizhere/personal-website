@@ -665,7 +665,7 @@ class App {
   onTouchMove(e: MouseEvent | TouchEvent) {
     if (!this.isDown) return;
     const x = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const distance = (this.start - x) * (this.scrollSpeed * 0.025);
+    const distance = (this.start - x) * (this.scrollSpeed * 0.125);
     this.scroll.target = (this.scroll.position ?? 0) + distance;
   }
 
@@ -685,13 +685,13 @@ class App {
     switch (e.key) {
       case 'ArrowRight':
         e.preventDefault();
-        this.scroll.target += this.scrollSpeed * 5;
+        this.scroll.target += this.scrollSpeed * 10;
         this.onCheckDebounce();
         break;
 
       case 'ArrowLeft':
         e.preventDefault();
-        this.scroll.target -= this.scrollSpeed * 5;
+        this.scroll.target -= this.scrollSpeed * 10;
         this.onCheckDebounce();
         break;
 
