@@ -82,6 +82,28 @@ async function loadCustomFont(fontUrl: string): Promise<string> {
   const isStylesheet = fontUrl.includes('fonts.googleapis.com') || /\.css(\?.*)?$/i.test(fontUrl);
   return isStylesheet ? loadFontFromStylesheet(fontUrl) : loadFontFromFile(fontUrl);
 }
+// Just added
+function preloadImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.crossOrigin = 'anonymous'; // this line is important to avoid CORS issues when loading images from different origins
+    image.decoding = 'async'; // this line is important to ensure the image is decoded asynchronously, which can improve performance and avoid blocking the main thread
+    image.onload = () => resolve(image); // resolve the promise when the image is loaded 
+    image.onerror = reject;
+    image.src = url;
+
+    if (image.decode) { // check if the decode method is available
+      image
+        .decode()
+        .then(() => resolve(image))
+        .catch(() => {
+          // Fall back to onload; some browsers reject decode for cross-origin images.
+        });
+    }
+  });
+}
+//
+
 
 // Loads `fontUrl` (a stylesheet such as a Google Fonts URL, or a direct font
 // file) and returns a canvas-ready font string that keeps the size/weight from
@@ -238,8 +260,9 @@ interface Viewport {
 
 interface MediaProps {
   geometry: Plane;
-  gl: GL;
-  image: string;
+  gl: GL; 
+  //image: string;
+  image: HTMLImageElement; // image has been changed to HTMLImageElement because we are preloading the images and passing the loaded HTMLImageElement to the Media class
   index: number;
   length: number;
   renderer: Renderer;
@@ -258,7 +281,8 @@ class Media {
   extra: number = 0;
   geometry: Plane;
   gl: GL;
-  image: string;
+  //image: string;
+  image: HTMLImageElement;
   index: number;
   length: number;
   renderer: Renderer;
@@ -388,19 +412,19 @@ class Media {
       },
       transparent: true
     });
-    
+    /* All of these are commented out because we are preloading the images and passing the loaded HTMLImageElement to the Media class, so we don't need to load the image here anymore.
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       texture.image = img;
-      this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+      this.program.uniforms.uImageSizes.value = [350, 500];
     };
     img.onerror = (err) => {
       console.error(`CircularGallery: failed to load image "${this.image}"`, err);
     };
     img.src = this.image;
 
-/*
+
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.src = this.image;
@@ -408,6 +432,8 @@ class Media {
       texture.image = img;
       this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
     };*/
+    texture.image = this.image;
+    this.program.uniforms.uImageSizes.value = [this.image.naturalWidth, this.image.naturalHeight];
   }
 
   createMesh() {
@@ -433,7 +459,7 @@ class Media {
     this.plane.position.x = this.x - scroll.current - this.extra;
 
     const x = this.plane.position.x;
-    const H = this.viewport.width / 2;
+    const H = this.viewport.width / 2; 
 
     if (this.bend === 0) {
       this.plane.position.y = 0;
@@ -558,9 +584,24 @@ class App {
     this.createScene();
     this.onResize();
     this.createGeometry();
-    this.createMedias(items, bend, textColor, borderRadius, font);
-    this.update();
-    this.addEventListeners();
+    // this.createMedias(items, bend, textColor, borderRadius, font);
+    // Added this init call to ensure that the images are preloaded before creating the medias
+    this.init(items, bend, textColor, borderRadius, font);
+  }
+
+  async init(
+    items: { image: string; text: string }[] | undefined,
+    bend: number,
+    textColor: string,
+    borderRadius: number,
+    font: string
+  ) {
+    await this.createMedias(items, bend, textColor, borderRadius, font);
+    // This line: renders the scene after the medias have been created and added to the scene. This ensures that the first frame is rendered with all the medias in place.
+    this.renderer.render({ scene: this.scene, camera: this.camera }); 
+    //
+    this.update(); // this line: starts the animation loop after the medias have been created and added to the scene.
+    this.addEventListeners(); // this line: adds the event listeners, which include the resize, wheel, touch, and keydown events.
   }
 
   createRenderer() {
@@ -590,8 +631,8 @@ class App {
       widthSegments: 100
     });
   }
-
-  createMedias(
+ // Added async
+  async createMedias(
     items: { image: string; text: string }[] | undefined,
     bend: number = 1,
     textColor: string,
@@ -649,12 +690,15 @@ class App {
       }
     ];
     const galleryItems = items && items.length ? items : defaultItems;
-    this.mediasImages = galleryItems.concat(galleryItems);
+    this.mediasImages = galleryItems;
+    // Added the line below, which preloads all the images before creating the Media instances.
+    const preloadedImages = await Promise.all(this.mediasImages.map(data => preloadImage(data.image)));
     this.medias = this.mediasImages.map((data, index) => {
       return new Media({
         geometry: this.planeGeometry,
         gl: this.gl,
-        image: data.image,
+        // image: data.image,
+        image: preloadedImages[index],
         index,
         length: this.mediasImages.length,
         renderer: this.renderer,
