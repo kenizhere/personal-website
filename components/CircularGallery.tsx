@@ -102,6 +102,10 @@ function preloadImage(url: string): Promise<HTMLImageElement> {
     }
   });
 }
+
+function isMobileViewport(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+}
 //
 
 
@@ -349,7 +353,7 @@ class Media {
   
   createShader() {
     const texture = new Texture(this.gl, {
-      generateMipmaps: true
+      generateMipmaps: !isMobileViewport()
     });
     this.program = new Program(this.gl, {
       depthTest: false,
@@ -690,21 +694,24 @@ class App {
       }
     ];
     const galleryItems = items && items.length ? items : defaultItems;
-    this.mediasImages = galleryItems;
-    // Added the line below, which preloads all the images before creating the Media instances.
-    const preloadedImages = await Promise.all(this.mediasImages.map(data => preloadImage(data.image)));
-    this.medias = this.mediasImages.map((data, index) => {
+    const preloadedImages = await Promise.allSettled(galleryItems.map(data => preloadImage(data.image)));
+    // This line: filters out any images that failed to load, and creates the medias only for the successfully loaded images.
+    const loadedItems = galleryItems
+      .map((data, index) => ({ data, result: preloadedImages[index] }))
+      .filter((entry): entry is { data: { image: string; text: string }; result: PromiseFulfilledResult<HTMLImageElement> } => entry.result.status === 'fulfilled');
+
+    this.mediasImages = loadedItems.map(entry => entry.data);
+    this.medias = loadedItems.map((entry, index) => {
       return new Media({
         geometry: this.planeGeometry,
         gl: this.gl,
-        // image: data.image,
-        image: preloadedImages[index],
+        image: entry.result.value,
         index,
         length: this.mediasImages.length,
         renderer: this.renderer,
         scene: this.scene,
         screen: this.screen,
-        text: data.text,
+        text: entry.data.text,
         viewport: this.viewport,
         bend,
         textColor,
@@ -713,6 +720,10 @@ class App {
         itemScale: this.itemScale
       });
     });
+
+    if (!this.medias.length) {
+      throw new Error('CircularGallery: no images could be loaded on this device');
+    }
   }
 
   onTouchDown(e: MouseEvent | TouchEvent) {
