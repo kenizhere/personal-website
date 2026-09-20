@@ -12,7 +12,6 @@ import ViewPDFWrapper from "@/components/ViewPDFWrapper";
 
 
 
-
 const page = () => {
   return (
     /* Flex container with column direction, centered items, minimum height of the screen, and padding on the y-axis
