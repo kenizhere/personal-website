@@ -76,7 +76,7 @@ const page = () => {
           <ResumeDownloadBtn />
         </div>
         <div className="mt-8 hide-on-mobile">
-          <ViewPDFWrapper filePath="/files/Duc Duy Lam (Ken) Duong_Resume.pdf"/>
+          <ViewPDFWrapper filePath="/files/Duc Duy Lam (Ken) Duong_Resume (final).pdf"/>
         </div>
       </section>
     </main>
